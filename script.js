@@ -1,4 +1,4 @@
-﻿const tariffData = [
+const tariffData = [
   { hour: 0, tariff: 5.2, carbon: 540, band: "normal" },
   { hour: 3, tariff: 5.0, carbon: 590, band: "normal" },
   { hour: 6, tariff: 5.8, carbon: 680, band: "normal" },
@@ -17,9 +17,10 @@ const defaultAppliances = [
   { id: "washing", name: "Washing machine", kind: "flexible", userStart: 18.25, recommendedStart: 12.75, duration: 70, power: 0.7, enabled: true, note: "Laundry can finish anytime today" },
   { id: "dishwasher", name: "Dishwasher", kind: "flexible", userStart: 20.0, recommendedStart: 14.1, duration: 95, power: 1.15, enabled: true, note: "Shifted out of 18:00-22:00 peak" },
   { id: "geyser", name: "Geyser", kind: "comfort", userStart: 7.0, recommendedStart: 6.35, duration: 28, power: 2.0, enabled: true, note: "Morning comfort load" },
-  { id: "bedroom-ac", name: "Bedroom AC", kind: "comfort", userStart: 21.0, recommendedStart: 17.2, duration: 75, power: 1.35, enabled: true, note: "Pre-cool before peak tariff" },
+  { id: "geyser-evening", name: "Geyser evening", kind: "comfort", userStart: 16.0, recommendedStart: 16.0, duration: 30, power: 2.0, enabled: true, note: "Evening hot water slot" },
+  { id: "bedroom-ac", name: "Bedroom AC", kind: "comfort", userStart: 15.0, recommendedStart: 15.0, duration: 60, power: 1.35, enabled: true, note: "Afternoon cooling load" },
   { id: "water-pump", name: "Water pump", kind: "flexible", userStart: 19.5, recommendedStart: 11.8, duration: 25, power: 0.75, enabled: true, note: "Tank top-up during low-cost window" },
-  { id: "ev-charger", name: "EV charger", kind: "flexible", userStart: 19.0, recommendedStart: 10.0, duration: 150, power: 2.2, enabled: true, note: "Largest flexible load" },
+  { id: "ev-charger", name: "EV charger", kind: "flexible", userStart: 23.5, recommendedStart: 23.5, duration: 150, power: 2.2, enabled: true, note: "Late-night charging slot" },
   { id: "refrigerator", name: "Refrigerator", kind: "critical", userStart: 0.0, recommendedStart: 0.0, duration: 1440, power: 0.12, enabled: true, note: "Always-on base load" }
 ];
 
@@ -441,10 +442,12 @@ elements.recommendBtn.addEventListener("click", optimizeSchedule);
 
 elements.clearManualBtn.addEventListener("click", () => {
   appliances = JSON.parse(JSON.stringify(defaultAppliances));
-  elements.recommendationTitle.textContent = "Recommended schedule restored";
-  elements.recommendationText.textContent = "The original pre-filled whole-day plan is back in place with realistic dummy values.";
   renderAll();
 });
 
-optimizeSchedule();
+renderAll();
+
+
+
+
 
