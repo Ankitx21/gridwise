@@ -1,0 +1,191 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GridWise Home Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="Dashboard navigation">
+      <div class="brand">
+        <div class="brand-mark">G</div>
+        <div>
+          <strong>GridWise</strong>
+          <span>Whole-day scheduler</span>
+        </div>
+      </div>
+
+      <nav class="nav-list">
+        <a class="nav-item active" href="#overview"><span class="nav-icon">O</span>Overview</a>
+        <a class="nav-item" href="#schedule"><span class="nav-icon">S</span>Schedule</a>
+        <a class="nav-item" href="#appliances"><span class="nav-icon">A</span>Appliances</a>
+        <a class="nav-item" href="#stats"><span class="nav-icon">$</span>Stats</a>
+      </nav>
+
+      <div class="side-card">
+        <span class="label">Today’s strategy</span>
+        <strong>Shift, shed, shape</strong>
+        <p>Move flexible loads into cheaper and cleaner hours while keeping house load below 4.8 kW.</p>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar" id="overview">
+        <div>
+          <p class="eyebrow">Bengaluru • residential demand response</p>
+          <h1>Whole-Day Energy Scheduler</h1>
+          <p class="intro">Recommended schedule is pre-filled. Edit appliance timings, add new loads, or pause any appliance and the dashboard recalculates instantly.</p>
+        </div>
+        <div class="action-cluster">
+          <button id="recommendBtn" class="primary-button" type="button">Use best schedule</button>
+          <button id="clearManualBtn" class="secondary-button" type="button">Reset edits</button>
+        </div>
+      </header>
+
+      <section class="hero-grid" aria-label="Daily status">
+        <article class="status-card large">
+          <div class="card-heading">
+            <span>Projected peak load</span>
+            <strong id="peakLoadText">4.3 kW</strong>
+          </div>
+          <div class="load-meter" aria-hidden="true"><span id="loadBar"></span></div>
+          <div class="split-row"><span>Safe operating limit</span><strong>4.8 kW of 6.0 kW</strong></div>
+        </article>
+        <article class="status-card">
+          <span class="label">Daily bill saving</span>
+          <strong id="savingText">₹82</strong>
+          <p>Against running each appliance at its preferred use time.</p>
+        </article>
+        <article class="status-card">
+          <span class="label">Energy shifted</span>
+          <strong id="shiftedText">5.1 kWh</strong>
+          <p>Moved away from evening grid-stress hours.</p>
+        </article>
+        <article class="status-card weather-card">
+          <span class="label">Weather signal</span>
+          <strong>28°C • Humid</strong>
+          <p>Cooling loads are scheduled before the 18:00 peak window.</p>
+        </article>
+      </section>
+
+      <section class="content-grid" id="schedule">
+        <article class="panel tariff-panel">
+          <div class="section-header">
+            <div>
+              <p class="eyebrow">Price, load and carbon</p>
+              <h2>Best windows through the day</h2>
+            </div>
+            <div class="legend">
+              <span><i class="dot cheap"></i> Cheap/clean</span>
+              <span><i class="dot normal"></i> Normal</span>
+              <span><i class="dot peak"></i> Peak</span>
+            </div>
+          </div>
+          <div class="chart-wrap">
+            <svg id="tariffChart" viewBox="0 0 760 290" role="img" aria-label="Hourly tariff and carbon chart"></svg>
+          </div>
+        </article>
+
+        <article class="panel recommendation-panel">
+          <div class="section-header compact">
+            <div>
+              <p class="eyebrow">Recommendation</p>
+              <h2>Today’s operating plan</h2>
+            </div>
+            <span class="pill success">Pre-filled</span>
+          </div>
+          <div class="recommendation">
+            <strong id="recommendationTitle">Run flexible loads before evening peak</strong>
+            <p id="recommendationText">Washing, dishwasher, pump and EV charging are shifted to 11:00-16:00. Comfort appliances stay close to preferred use time without crossing the safe load limit.</p>
+          </div>
+          <div class="mini-list">
+            <div><span>Cheapest block</span><strong>11:00 - 16:00</strong></div>
+            <div><span>Avoid block</span><strong>18:00 - 22:00</strong></div>
+            <div><span>Load ceiling</span><strong>4.8 kW</strong></div>
+          </div>
+        </article>
+      </section>
+
+      <section class="panel timeline-panel">
+        <div class="section-header">
+          <div>
+            <p class="eyebrow">Editable whole-day schedule</p>
+            <h2>Appliance timeline</h2>
+          </div>
+          <span class="pill" id="enabledCount">0 active</span>
+        </div>
+        <div id="timeline" class="timeline" aria-label="Whole-day appliance schedule"></div>
+      </section>
+
+      <section class="lower-grid" id="appliances">
+        <article class="panel editor-panel">
+          <div class="section-header">
+            <div>
+              <p class="eyebrow">Edit or add appliances</p>
+              <h2>Appliance controls</h2>
+            </div>
+          </div>
+          <form id="applianceForm" class="appliance-form">
+            <label>Name<input id="newName" type="text" value="Clothes iron" required></label>
+            <label>Preferred use time<input id="newPreferred" type="time" value="17:30" required></label>
+            <label>Runtime min<input id="newDuration" type="number" min="10" max="480" value="30" required></label>
+            <label>Power kW<input id="newPower" type="number" min="0.1" max="7" step="0.05" value="1.20" required></label>
+            <label>Type
+              <select id="newKind">
+                <option value="flexible">Flexible</option>
+                <option value="comfort">Comfort</option>
+                <option value="critical">Critical</option>
+              </select>
+            </label>
+            <button class="primary-button" type="submit">Add with best time</button>
+          </form>
+          <p class="helper-text">Each appliance keeps your preferred time and a recommended time. Edit either one; changing load details refreshes the recommended schedule automatically.</p>
+          <div id="applianceList" class="appliance-list"></div>
+        </article>
+
+        <article class="panel" id="stats">
+          <div class="section-header">
+            <div>
+              <p class="eyebrow">Individual appliance stats</p>
+              <h2>Consumption and savings</h2>
+            </div>
+          </div>
+          <div id="statCards" class="stat-cards"></div>
+        </article>
+      </section>
+
+      <section class="panel summary-panel">
+        <div class="section-header">
+          <div>
+            <p class="eyebrow">Daily summary</p>
+            <h2>Optimized schedule table</h2>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Appliance</th>
+                <th>Preferred time</th>
+                <th>Recommended</th>
+                <th>Energy</th>
+                <th>Cost saved</th>
+                <th>CO2e saved</th>
+              </tr>
+            </thead>
+            <tbody id="summaryRows"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
+
